@@ -1,0 +1,26 @@
+# Containerlab runtime artifacts and state directories
+clab-*/
+.clab/
+*.log
+
+# Vendor images and large binary archives
+images/*.tar
+images/*.tar.gz
+images/*.tgz
+images/*.qcow2
+images/*.img
+images/*.bin
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+.venv/
+env/
+venv/
+*.egg-info/
+
+# Editor & OS artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
