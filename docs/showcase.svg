@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1050" width="100%" height="100%">
+  <defs>
+    <style>
+      .bg-main { fill: #070d19; }
+      .pane-divider { stroke: #1e293b; stroke-width: 2; }
+      
+      /* Typography */
+      .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      .font-mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+      
+      .pane-header { font-size: 15px; font-weight: 700; fill: #64748b; letter-spacing: 1.5px; }
+      .pane-title { font-size: 20px; font-weight: 700; fill: #f8fafc; }
+      
+      /* Left Pane: Topology Styles */
+      .box-wan { fill: #0f172a; stroke: #0284c7; stroke-width: 1.5; rx: 8; }
+      .box-dc1 { fill: #0f172a; stroke: #4f46e5; stroke-width: 1.5; rx: 8; }
+      .box-dc2 { fill: #0f172a; stroke: #059669; stroke-width: 1.5; rx: 8; }
+      .node-r { fill: #1e293b; stroke: #475569; stroke-width: 1.5; rx: 6; }
+      .node-h { fill: #1e293b; stroke: #2563eb; stroke-width: 1.5; rx: 6; }
+      
+      .topo-title { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+      .topo-sub { font-size: 10px; fill: #94a3b8; }
+      .node-name { font-size: 13px; font-weight: 700; fill: #ffffff; text-anchor: middle; }
+      .node-desc { font-size: 9.5px; fill: #94a3b8; text-anchor: middle; }
+      
+      .link-wan { stroke: #38bdf8; stroke-width: 2.5; stroke-dasharray: 6 4; }
+      .link-lan { stroke: #475569; stroke-width: 2; }
+      .badge-bg { fill: #1e293b; stroke: #334155; stroke-width: 1; rx: 4; }
+      .badge-t { font-size: 9px; font-weight: 600; fill: #38bdf8; text-anchor: middle; }
+      .badge-s { font-size: 8.5px; fill: #cbd5e1; text-anchor: middle; }
+      .p-tag { font-size: 8.5px; fill: #94a3b8; }
+
+      /* Right Pane: Terminal Styles */
+      .term-window { fill: #0b1120; stroke: #1e293b; stroke-width: 1.5; rx: 10; }
+      .term-header { fill: #0f172a; rx: 10; }
+      .term-dot-r { fill: #ef4444; }
+      .term-dot-y { fill: #f59e0b; }
+      .term-dot-g { fill: #10b981; }
+      .term-title { font-size: 12px; fill: #94a3b8; text-anchor: middle; }
+      
+      .cmd-prompt { font-size: 13px; font-weight: 600; fill: #10b981; }
+      .cmd-text { font-size: 13px; font-weight: 600; fill: #f8fafc; }
+      
+      .t-sec { font-size: 12.5px; font-weight: 700; fill: #38bdf8; }
+      .t-ok { font-size: 11.5px; font-weight: 700; fill: #10b981; }
+      .t-dim { font-size: 11.5px; fill: #64748b; }
+      .t-white { font-size: 11.5px; fill: #e2e8f0; }
+      .t-green { font-size: 11.5px; fill: #34d399; }
+      .t-amber { font-size: 11.5px; fill: #fbbf24; }
+      .t-num { font-size: 11.5px; fill: #a5b4fc; font-weight: 600; }
+      .t-box { fill: #022c22; stroke: #059669; stroke-width: 1; rx: 6; }
+      .t-box-text { font-size: 12.5px; font-weight: 700; fill: #34d399; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="2000" height="1050" class="bg-main" />
+
+  <!-- ========================================================================= -->
+  <!-- LEFT PANE: TOPOLOGY ARCHITECTURE                                          -->
+  <!-- ========================================================================= -->
+
+  <g transform="translate(40, 40)">
+    <text x="0" y="24" class="font-sans pane-header">SECTION 01 / ARCHITECTURE</text>
+    <text x="0" y="54" class="font-sans pane-title">Enterprise Multi-Site WAN Infrastructure</text>
+
+    <!-- WAN Core Provider Box -->
+    <rect x="320" y="90" width="310" height="130" class="box-wan" />
+    <text x="340" y="116" class="font-sans topo-title" fill="#38bdf8">WAN CORE PROVIDER</text>
+    <text x="340" y="132" class="font-sans topo-sub">Autonomous System: AS 65000</text>
+    
+    <rect x="395" y="148" width="160" height="54" class="node-r" />
+    <text x="475" y="171" class="font-sans node-name">wan-r1</text>
+    <text x="475" y="188" class="font-mono node-desc">10.255.255.1 / BGP</text>
+
+    <!-- DC1 Alpha Box -->
+    <rect x="0" y="280" width="460" height="340" class="box-dc1" />
+    <text x="24" y="310" class="font-sans topo-title" fill="#818cf8">DATA CENTER 1 (ALPHA)</text>
+    <text x="24" y="328" class="font-sans topo-sub">Autonomous System: AS 65100 | IGP: OSPF Area 0</text>
+
+    <!-- dc1-edge -->
+    <rect x="280" y="350" width="155" height="54" class="node-r" />
+    <text x="357" y="373" class="font-sans node-name">dc1-edge</text>
+    <text x="357" y="390" class="font-mono node-desc">AS 65100 / OSPF p2p</text>
+
+    <!-- dc1-dist -->
+    <rect x="280" y="520" width="155" height="54" class="node-r" />
+    <text x="357" y="543" class="font-sans node-name">dc1-dist</text>
+    <text x="357" y="560" class="font-mono node-desc">OSPF Area 0</text>
+
+    <!-- dc1-srv -->
+    <rect x="24" y="520" width="170" height="54" class="node-h" />
+    <text x="109" y="543" class="font-sans node-name">dc1-srv</text>
+    <text x="109" y="560" class="font-mono node-desc">10.1.10.100/24</text>
+
+    <!-- DC2 Bravo Box -->
+    <rect x="490" y="280" width="460" height="340" class="box-dc2" />
+    <text x="514" y="310" class="font-sans topo-title" fill="#34d399">DATA CENTER 2 (BRAVO)</text>
+    <text x="514" y="328" class="font-sans topo-sub">Autonomous System: AS 65200 | IGP: OSPF Area 0</text>
+
+    <!-- dc2-edge -->
+    <rect x="515" y="350" width="155" height="54" class="node-r" />
+    <text x="592" y="373" class="font-sans node-name">dc2-edge</text>
+    <text x="592" y="390" class="font-mono node-desc">AS 65200 / OSPF p2p</text>
+
+    <!-- dc2-dist -->
+    <rect x="515" y="520" width="155" height="54" class="node-r" />
+    <text x="592" y="543" class="font-sans node-name">dc2-dist</text>
+    <text x="592" y="560" class="font-mono node-desc">OSPF Area 0</text>
+
+    <!-- dc2-srv -->
+    <rect x="755" y="520" width="170" height="54" class="node-h" />
+    <text x="840" y="543" class="font-sans node-name">dc2-srv</text>
+    <text x="840" y="560" class="font-mono node-desc">10.2.10.100/24</text>
+
+    <!-- Interconnections -->
+    <!-- WAN to DC1 Link -->
+    <line x1="420" y1="202" x2="357" y2="350" class="link-wan" />
+    <rect x="330" y="245" width="115" height="34" class="badge-bg" />
+    <text x="387" y="259" class="font-mono badge-t">eBGP Link</text>
+    <text x="387" y="272" class="font-mono badge-s">10.100.1.0/30</text>
+    <text x="410" y="222" class="font-mono p-tag">eth1</text>
+    <text x="365" y="340" class="font-mono p-tag">eth1</text>
+
+    <!-- WAN to DC2 Link -->
+    <line x1="530" y1="202" x2="592" y2="350" class="link-wan" />
+    <rect x="510" y="245" width="115" height="34" class="badge-bg" />
+    <text x="567" y="259" class="font-mono badge-t">eBGP Link</text>
+    <text x="567" y="272" class="font-mono badge-s">10.100.2.0/30</text>
+    <text x="525" y="222" class="font-mono p-tag">eth2</text>
+    <text x="575" y="340" class="font-mono p-tag">eth1</text>
+
+    <!-- DC1 Internal Links -->
+    <line x1="357" y1="404" x2="357" y2="520" class="link-lan" />
+    <rect x="370" y="448" width="82" height="26" class="badge-bg" />
+    <text x="411" y="464" class="font-mono badge-s">10.1.0.0/30</text>
+    <text x="335" y="424" class="font-mono p-tag">eth2</text>
+    <text x="335" y="510" class="font-mono p-tag">eth1</text>
+
+    <line x1="280" y1="547" x2="194" y2="547" class="link-lan" />
+    <rect x="208" y="555" width="60" height="20" class="badge-bg" />
+    <text x="238" y="569" class="font-mono badge-s">LAN</text>
+    <text x="250" y="540" class="font-mono p-tag">eth2</text>
+    <text x="202" y="540" class="font-mono p-tag">eth1</text>
+
+    <!-- DC2 Internal Links -->
+    <line x1="592" y1="404" x2="592" y2="520" class="link-lan" />
+    <rect x="605" y="448" width="82" height="26" class="badge-bg" />
+    <text x="646" y="464" class="font-mono badge-s">10.2.0.0/30</text>
+    <text x="570" y="424" class="font-mono p-tag">eth2</text>
+    <text x="570" y="510" class="font-mono p-tag">eth1</text>
+
+    <line x1="670" y1="547" x2="755" y2="547" class="link-lan" />
+    <rect x="682" y="555" width="60" height="20" class="badge-bg" />
+    <text x="712" y="569" class="font-mono badge-s">LAN</text>
+    <text x="678" y="540" class="font-mono p-tag">eth2</text>
+    <text x="735" y="540" class="font-mono p-tag">eth1</text>
+
+    <!-- Bottom Specs Footer -->
+    <g transform="translate(0, 650)">
+      <rect x="0" y="0" width="950" height="280" fill="#0f172a" stroke="#1e293b" rx="8" />
+      <text x="25" y="32" class="font-sans" font-size="12px" font-weight="700" fill="#94a3b8" letter-spacing="1px">TECHNICAL SPECIFICATIONS</text>
+      
+      <text x="25" y="65" class="font-mono" font-size="11.5px" fill="#38bdf8">• Emulation Engine:</text>
+      <text x="180" y="65" class="font-mono" font-size="11.5px" fill="#cbd5e1">Containerlab 0.79.0 + Docker Engine</text>
+
+      <text x="25" y="95" class="font-mono" font-size="11.5px" fill="#38bdf8">• Network OS:</text>
+      <text x="180" y="95" class="font-mono" font-size="11.5px" fill="#cbd5e1">FRRouting (FRR) 8.4 on Linux kernel</text>
+
+      <text x="25" y="125" class="font-mono" font-size="11.5px" fill="#38bdf8">• Exterior Gateway:</text>
+      <text x="180" y="125" class="font-mono" font-size="11.5px" fill="#cbd5e1">eBGP (AS 65000 Core &lt;-&gt; AS 65100 / AS 65200 Edges)</text>
+
+      <text x="25" y="155" class="font-mono" font-size="11.5px" fill="#38bdf8">• Interior Gateway:</text>
+      <text x="180" y="155" class="font-mono" font-size="11.5px" fill="#cbd5e1">OSPF Area 0 (point-to-point network type, no DR/BDR delay)</text>
+
+      <text x="25" y="185" class="font-mono" font-size="11.5px" fill="#38bdf8">• Redistribution:</text>
+      <text x="180" y="185" class="font-mono" font-size="11.5px" fill="#cbd5e1">Bidirectional OSPF &lt;-&gt; BGP with Longest Prefix Match (/24)</text>
+
+      <text x="25" y="215" class="font-mono" font-size="11.5px" fill="#38bdf8">• Host Endpoints:</text>
+      <text x="180" y="215" class="font-mono" font-size="11.5px" fill="#cbd5e1">Alpine Linux clients (dc1-srv: 10.1.10.100, dc2-srv: 10.2.10.100)</text>
+
+      <text x="25" y="245" class="font-mono" font-size="11.5px" fill="#38bdf8">• Repo GitHub:</text>
+      <text x="180" y="245" class="font-mono" font-size="11.5px" fill="#34d399">github.com/Bryann288/netdevops-containerlab-labs</text>
+    </g>
+  </g>
+
+  <!-- Dividing vertical line -->
+  <line x1="1030" y1="40" x2="1030" y2="990" class="pane-divider" />
+
+  <!-- ========================================================================= -->
+  <!-- RIGHT PANE: AUTOMATED VALIDATION TERMINAL (PROOF OF WORK)                  -->
+  <!-- ========================================================================= -->
+
+  <g transform="translate(1070, 40)">
+    <text x="0" y="24" class="font-sans pane-header">SECTION 02 / PROOF OF WORK</text>
+    <text x="0" y="54" class="font-sans pane-title">Deterministic Automation Test Suite</text>
+
+    <!-- Terminal Window Frame -->
+    <rect x="0" y="90" width="890" height="880" class="term-window" />
+    
+    <!-- Titlebar -->
+    <path d="M 0 100 A 10 10 0 0 1 10 90 L 880 90 A 10 10 0 0 1 890 100 L 890 128 L 0 128 Z" class="term-header" />
+    <circle cx="24" cy="109" r="6" class="term-dot-r" />
+    <circle cx="44" cy="109" r="6" class="term-dot-y" />
+    <circle cx="64" cy="109" r="6" class="term-dot-g" />
+    <text x="445" y="113" class="font-mono term-title">bryann@netdevops-node: ~/netdevops-containerlab-labs</text>
+
+    <!-- Terminal Execution Body -->
+    <g transform="translate(25, 160)" class="font-mono">
+      <!-- Command prompt -->
+      <text x="0" y="0"><tspan class="cmd-prompt">bryann@lab:~$</tspan> <tspan class="cmd-text">make verify-enterprise</tspan></text>
+      
+      <!-- Stage 1 -->
+      <text x="0" y="32" class="t-sec">[1/5] Verifying node status in Docker Engine...</text>
+      <text x="20" y="52" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-wan-r1:   UP (running)</tspan></text>
+      <text x="20" y="70" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-dc1-edge: UP (running)</tspan></text>
+      <text x="20" y="88" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-dc1-dist: UP (running)</tspan></text>
+      <text x="20" y="106" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-dc1-srv:  UP (running)</tspan></text>
+      <text x="20" y="124" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-dc2-edge: UP (running)</tspan></text>
+      <text x="20" y="142" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-dc2-dist: UP (running)</tspan></text>
+      <text x="20" y="160" class="t-ok">[OK] <tspan class="t-white">clab-enterprise-wan-dc2-srv:  UP (running)</tspan></text>
+
+      <!-- Stage 2 -->
+      <text x="0" y="196" class="t-sec">[2/5] Verifying eBGP convergence on WAN Core (wan-r1)...</text>
+      <text x="20" y="218" class="t-dim">Neighbor       V   AS     MsgRcvd MsgSent  Up/Down  State/PfxRcd PfxSnt</text>
+      <text x="20" y="236" class="t-white">10.100.1.2     4   65100       12      12  00:05:40            1      2</text>
+      <text x="20" y="254" class="t-white">10.100.2.2     4   65200       12      12  00:05:40            1      2</text>
+      <text x="20" y="276" class="t-ok">[OK] eBGP sessions to DC1 (AS 65100) and DC2 (AS 65200): ESTABLISHED</text>
+
+      <!-- Stage 3 -->
+      <text x="0" y="312" class="t-sec">[3/5] Verifying OSPF p2p adjacencies in DC1 &amp; DC2...</text>
+      <text x="20" y="332" class="t-white">dc1-edge (10.1.0.1) &lt;--&gt; dc1-dist (10.1.0.2): <tspan class="t-green">State Full/-</tspan></text>
+      <text x="20" y="350" class="t-white">dc2-edge (10.2.0.1) &lt;--&gt; dc2-dist (10.2.0.2): <tspan class="t-green">State Full/-</tspan></text>
+      <text x="20" y="372" class="t-ok">[OK] Point-to-point OSPF converged (DR/BDR wait time: 0s)</text>
+
+      <!-- Stage 4 -->
+      <text x="0" y="408" class="t-sec">[4/5] Data Plane ICMP Ping (dc1-srv -&gt; dc2-srv: 10.2.10.100)...</text>
+      <text x="20" y="428" class="t-dim">PING 10.2.10.100 (10.2.10.100): 56 data bytes</text>
+      <text x="20" y="446" class="t-white">64 bytes from 10.2.10.100: seq=0 ttl=59 time=0.212 ms</text>
+      <text x="20" y="464" class="t-white">64 bytes from 10.2.10.100: seq=1 ttl=59 time=0.205 ms</text>
+      <text x="20" y="482" class="t-white">64 bytes from 10.2.10.100: seq=2 ttl=59 time=0.144 ms</text>
+      <text x="20" y="500" class="t-white">64 bytes from 10.2.10.100: seq=3 ttl=59 time=0.186 ms</text>
+      <text x="20" y="522" class="t-amber">--- 10.2.10.100 ping statistics: 4 packets transmitted, 4 received, 0% packet loss ---</text>
+      <text x="20" y="542" class="t-ok">[OK] End-to-end data plane forwarding: PASSED (0% loss, rtt avg=0.18ms)</text>
+
+      <!-- Stage 5 -->
+      <text x="0" y="578" class="t-sec">[5/5] Hop-by-Hop Traceability (traceroute dc1-srv -&gt; dc2-srv)...</text>
+      <text x="20" y="600" class="t-dim">traceroute to 10.2.10.100 (10.2.10.100), 30 hops max, 46 byte packets</text>
+      <text x="20" y="620" class="t-white"><tspan class="t-num"> 1 </tspan> 10.1.10.1   [dc1-dist]     0.005 ms  0.003 ms  0.004 ms</text>
+      <text x="20" y="638" class="t-white"><tspan class="t-num"> 2 </tspan> 10.1.0.1    [dc1-edge]     0.003 ms  0.002 ms  0.002 ms</text>
+      <text x="20" y="656" class="t-white"><tspan class="t-num"> 3 </tspan> 10.100.1.1  [wan-r1 (WAN)] 0.003 ms  0.003 ms  0.004 ms</text>
+      <text x="20" y="674" class="t-white"><tspan class="t-num"> 4 </tspan> 10.100.2.2  [dc2-edge]     0.002 ms  0.003 ms  0.006 ms</text>
+      <text x="20" y="692" class="t-white"><tspan class="t-num"> 5 </tspan> 10.2.0.2    [dc2-dist]     0.003 ms  0.002 ms  0.003 ms</text>
+      <text x="20" y="710" class="t-white"><tspan class="t-num"> 6 </tspan> 10.2.10.100 [dc2-srv]      0.003 ms  0.003 ms  0.002 ms</text>
+
+      <!-- Success Result Box -->
+      <rect x="0" y="745" width="840" height="42" class="t-box" />
+      <text x="420" y="771" class="font-mono t-box-text">ALL AUTOMATION TESTS PASSED (0% LOSS - 6 HOPS DETERMINISTIC PATH)</text>
+    </g>
+  </g>
+</svg>

@@ -4,11 +4,11 @@ Repository containing declarative network topologies, configurations, and automa
 
 ---
 
-## Network Architecture Overview
+## Network Architecture & Automated Validation Overview
 
-Below is the architecture for the Enterprise Multi-Site WAN topology (`labs/04-enterprise-multisite-bgp-ospf`):
+Below is the complete architecture and test execution for the Enterprise Multi-Site WAN topology (`labs/04-enterprise-multisite-bgp-ospf`):
 
-![Enterprise Multi-Site WAN Topology](docs/topology.png)
+![Enterprise Multi-Site WAN Topology & Automated Validation Showcase](docs/showcase.png)
 
 ```mermaid
 flowchart TD
