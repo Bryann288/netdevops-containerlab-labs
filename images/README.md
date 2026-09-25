@@ -1,31 +1,36 @@
-# Directorio de Imágenes de Red (NOS)
+# Network Operating System (NOS) Images
 
-Este directorio está pensado para almacenar archivos temporales de imágenes de fabricantes que requieren descarga manual (como Arista cEOS, Cisco XRD/c8000v, etc.). 
-*Nota: Este directorio está ignorado en `.gitignore` para no subir archivos pesados al repositorio.*
+This directory is intended for local storage of vendor network images that require manual download or licensing (such as Arista cEOS, Cisco XRd, or Cisco 8000v).
+
+Large archive files (`*.tar`, `*.qcow2`, etc.) located in this directory are ignored by `.gitignore` to prevent committing heavy binaries.
 
 ---
 
-## 1. Imágenes Públicas (Descarga automática)
-No necesitas descargar nada manualmente para estos entornos; Docker las descargará al hacer `deploy`:
-- **FRRouting (FRR)**: `frrouting/frr:latest`
-- **Nokia SR Linux**: `ghcr.io/nokia/srlinux:latest`
-- **Linux Hosts**: `alpine:latest` o `ghcr.io/hellt/network-multitool`
+## 1. Public Images (Automatic Download)
+
+The following container images are publicly hosted and downloaded automatically during `containerlab deploy`:
+
+- **FRRouting (FRR):** `frrouting/frr:latest`
+- **Nokia SR Linux:** `ghcr.io/nokia/srlinux:latest`
+- **Linux Hosts:** `alpine:latest`
 
 ---
 
 ## 2. Arista cEOS
-1. Descarga el paquete `cEOS-lab.tar` o `cEOS64-lab.tar` desde el portal de soporte de Arista ([Arista Software Downloads](https://www.arista.com/en/support/software-download)).
-2. Importa la imagen en Docker ejecutando desde WSL:
+
+1. Download the `cEOS-lab.tar` or `cEOS64-lab.tar` package from the [Arista Software Downloads](https://www.arista.com/en/support/software-download) portal.
+2. Import the image into Docker:
    ```bash
    docker import cEOS-lab.tar ceos:latest
    ```
-3. Verifica que la imagen esté disponible:
+3. Verify local image availability:
    ```bash
    docker images | grep ceos
    ```
 
 ---
 
-## 3. Cisco (IOL / XRd / c8000v)
-Si utilizas contenedores Cisco XRd o máquinas virtuales integradas vía vrnetlab:
-- Sigue las instrucciones oficiales de Containerlab: [https://containerlab.dev/manual/kinds/cisco/](https://containerlab.dev/manual/kinds/cisco/)
+## 3. Cisco (XRd / 8000v / IOL)
+
+Refer to the official Containerlab documentation for vendor-specific image guidelines:
+- [Containerlab Cisco Kind Documentation](https://containerlab.dev/manual/kinds/cisco/)

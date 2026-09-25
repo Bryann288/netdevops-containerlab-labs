@@ -1,95 +1,142 @@
-# NetDevOps - Laboratorios con Containerlab & Docker 🌐
+# NetDevOps Network Topologies with Containerlab & Docker
 
-Este repositorio contiene el entorno y las plantillas para ejecutar laboratorios de emulación de redes y **NetDevOps** utilizando **Containerlab** y **Docker** sobre el entorno Linux (WSL2 Ubuntu-22.04).
+Repository containing declarative network topologies, configurations, and automated validation tests for NetDevOps laboratories using Containerlab and Docker.
 
 ---
 
-## 📁 Estructura del Proyecto
+## Network Architecture Overview
+
+Below is the architecture for the Enterprise Multi-Site WAN topology (`labs/04-enterprise-multisite-bgp-ospf`):
+
+![Enterprise Multi-Site WAN Topology](docs/topology.svg)
+
+```mermaid
+flowchart TD
+    subgraph WAN ["WAN Core Provider (AS 65000)"]
+        wan["wan-r1<br/>Router-ID: 10.255.255.1"]
+    end
+
+    subgraph DC1 ["Data Center 1 - Alpha (AS 65100)"]
+        dc1_edge["dc1-edge<br/>BGP + OSPF Area 0"]
+        dc1_dist["dc1-dist<br/>OSPF Area 0"]
+        dc1_srv["dc1-srv<br/>10.1.10.100/24"]
+
+        dc1_srv ---|"10.1.10.0/24"| dc1_dist
+        dc1_dist ---|"10.1.0.0/30 (p2p)"| dc1_edge
+    end
+
+    subgraph DC2 ["Data Center 2 - Bravo (AS 65200)"]
+        dc2_edge["dc2-edge<br/>BGP + OSPF Area 0"]
+        dc2_dist["dc2-dist<br/>OSPF Area 0"]
+        dc2_srv["dc2-srv<br/>10.2.10.100/24"]
+
+        dc2_srv ---|"10.2.10.0/24"| dc2_dist
+        dc2_dist ---|"10.2.0.0/30 (p2p)"| dc2_edge
+    end
+
+    dc1_edge ===|"eBGP (10.100.1.0/30)"| wan
+    wan ===|"eBGP (10.100.2.0/30)"| dc2_edge
+```
+
+---
+
+## Directory Structure
 
 ```text
 .
-├── Makefile                      # Atajos para desplegar, destruir e inspeccionar labs
-├── .gitignore                    # Filtro de artefactos de Containerlab e imágenes grandes
-├── images/                       # Instrucciones y almacenamiento local de imágenes de red
+├── Makefile                      # Automation targets for lab lifecycle management
+├── .gitignore                    # Ignore rules for clab artifacts and vendor images
+├── docs/                         # Architecture diagrams and documentation assets
+│   └── topology.svg
+├── images/                       # Documentation on managing vendor NOS images
 │   └── README.md
+├── tests/                        # Automated validation test suites
+│   └── verify-enterprise-wan.sh
 └── labs/
-    ├── 01-frr-ospf/              # Lab básico inicial con FRRouting (OSPF) y clientes Alpine
-    │   ├── config/               # Configuraciones iniciales (daemons, frr.conf)
+    ├── 01-frr-ospf/              # Starter lab: 2 FRR routers with OSPF and Alpine hosts
+    │   ├── config/
     │   └── frr-ospf.clab.yml
-    ├── 02-srlinux-leafspine/     # Topología Leaf-Spine con Nokia SR Linux
+    ├── 02-srlinux-leafspine/     # Clos Fabric template with Nokia SR Linux
     │   └── srlinux-clos.clab.yml
-    ├── 03-arista-ceos/           # Topología de conmutación con Arista cEOS
+    ├── 03-arista-ceos/           # Switching template for Arista cEOS
     │   └── ceos-lab.clab.yml
-    └── 04-enterprise-multisite-bgp-ospf/ # 🌟 PROYECTO PRINCIPAL: WAN Multi-Sitio con BGP + OSPF (7 nodos)
-        ├── config/               # Configuraciones FRR por nodo
+    └── 04-enterprise-multisite-bgp-ospf/ # Flagship: Multi-Site WAN with BGP + OSPF
+        ├── config/
         ├── multisite-enterprise.clab.yml
         └── README.md
-
 ```
 
 ---
 
-## 🚀 Inicio Rápido (Quickstart)
+## Quickstart
 
-### 1. Acceder al entorno Linux (WSL)
-Abre tu terminal en Windows y entra en tu distribución de WSL:
+### Prerequisites
+
+- Linux (Ubuntu 22.04 or WSL2)
+- Docker Engine
+- Containerlab (>= 0.50.0)
+
+### Clone Repository
 
 ```bash
-wsl -d Ubuntu-22.04
-cd /mnt/c/Users/bryan/Documents/antigravity/silly-tesla
+git clone https://github.com/Bryann288/netdevops-containerlab-labs.git
+cd netdevops-containerlab-labs
 ```
 
-### 2. Desplegar el primer laboratorio (FRR OSPF)
+### Deploying Topologies
 
-Puedes usar el `Makefile` incluido o los comandos directos de Containerlab:
+Deploy the Enterprise Multi-Site WAN lab:
 
 ```bash
-# Con Make:
-make deploy LAB=labs/01-frr-ospf/frr-ospf.clab.yml
-
-# O directamente con containerlab:
-sudo containerlab deploy -t labs/01-frr-ospf/frr-ospf.clab.yml
+make deploy-enterprise
 ```
 
-> **Nota:** La primera vez, Docker descargará automáticamente las imágenes públicas de `frrouting/frr` y `alpine`.
+Or deploy directly via containerlab CLI:
+
+```bash
+sudo containerlab deploy -t labs/04-enterprise-multisite-bgp-ospf/multisite-enterprise.clab.yml --reconfigure
+```
 
 ---
 
-## 🔍 Comandos Útiles
+## Automated Verification
 
-| Acción | Comando con Make | Comando directo |
-| :--- | :--- | :--- |
-| **Ver estado y datos de conexión** | `make inspect LAB=...` | `sudo clab inspect -t <archivo.clab.yml>` |
-| **Visualizar topología en el navegador** | `make graph LAB=...` | `sudo clab graph -t <archivo.clab.yml>` |
-| **Destruir laboratorio y limpiar enlaces** | `make destroy LAB=...` | `sudo clab destroy -t <archivo.clab.yml> --cleanup` |
-| **Limpiar carpetas temporales** | `make clean` | `sudo rm -rf clab-*` |
+The repository includes end-to-end automated test suites to validate routing protocols, state convergence, and data plane forwarding:
 
----
+```bash
+make verify-enterprise
+```
 
-## 🧪 Pruebas en el Laboratorio FRR OSPF (`01-frr-ospf`)
-
-Una vez desplegado:
-
-1. **Entrar a la CLI de R1 (VTYSH de FRR):**
-   ```bash
-   docker exec -it clab-frr-ospf-r1 vtysh
-   ```
-   Comandos dentro de `vtysh`:
-   ```text
-   show ip ospf neighbor
-   show ip route ospf
-   exit
-   ```
-
-2. **Probar conectividad extremo a extremo desde PC1 hacia PC2:**
-   ```bash
-   docker exec -it clab-frr-ospf-pc1 ping -c 4 192.168.20.10
-   ```
+### Verification Checks Performed:
+1. **Container State**: Validates all 7 nodes are running.
+2. **BGP Sessions**: Confirms eBGP peering on `wan-r1` across AS 65000, AS 65100, and AS 65200.
+3. **OSPF Adjacencies**: Verifies point-to-point adjacency state is `Full` inside DC1 and DC2.
+4. **Data Plane Reachability**: Validates end-to-end ICMP ping between `dc1-srv` (10.1.10.100) and `dc2-srv` (10.2.10.100) with 0% packet loss.
+5. **Path Traceability**: Runs traceroute across the 6-hop path (`dc1-srv -> dc1-dist -> dc1-edge -> wan-r1 -> dc2-edge -> dc2-dist -> dc2-srv`).
 
 ---
 
-## 📦 Soporte de Fabricantes y Sistemas Operativos de Red
+## Topology Visualization
 
-- **FRRouting (FRR):** Descarga pública automática. Ideal para pruebas de enrutamiento rápido (BGP, OSPF, IS-IS).
-- **Nokia SR Linux:** Descarga pública automática (`ghcr.io/nokia/srlinux:latest`). Soporta gNMI, NETCONF y CLI completa.
-- **Arista cEOS:** Requiere importar previamente la imagen `ceos:latest` descargada de Arista (ver instrucciones en [images/README.md](file:///c:/Users/bryan/Documents/antigravity/silly-tesla/images/README.md)).
+Containerlab provides a built-in web server to explore the topology interactively:
+
+```bash
+make graph LAB=labs/04-enterprise-multisite-bgp-ospf/multisite-enterprise.clab.yml
+```
+
+Open `http://localhost:50080` in your web browser.
+
+---
+
+## Lifecycle Commands
+
+| Target | Description |
+| :--- | :--- |
+| `make deploy-enterprise` | Deploy Enterprise Multi-Site WAN topology |
+| `make verify-enterprise` | Run automated validation tests |
+| `make destroy-enterprise` | Destroy Enterprise lab and clean up network interfaces |
+| `make deploy LAB=<path>` | Deploy custom topology file |
+| `make destroy LAB=<path>` | Destroy custom topology file |
+| `make inspect LAB=<path>` | Display node details, IP assignments, and status |
+| `make graph LAB=<path>` | Launch interactive browser visualization |
+| `make clean` | Remove runtime `clab-*` temporary directories |

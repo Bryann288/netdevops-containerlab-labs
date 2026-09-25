@@ -1,68 +1,65 @@
-# Laboratorio Enterprise Multi-Site WAN con BGP & OSPF 🏢🌐
+# Enterprise Multi-Site WAN with BGP & OSPF
 
-Este laboratorio emula la arquitectura de una empresa multinacional o con dos centros de datos (**DC-Alpha** y **DC-Bravo**) interconectados a través de un proveedor de servicios o núcleo WAN (**WAN-Core**).
+This laboratory emulates a multi-site enterprise network consisting of two data center locations (DC-Alpha and DC-Bravo) interconnected through a service provider WAN core.
 
 ---
 
-## 📐 Topología y Diagrama de Red
+## Topology Diagram
+
+![Topology Diagram](../../docs/topology.svg)
 
 ```mermaid
 flowchart TD
-    subgraph WAN ["🌐 Núcleo WAN (AS 65000)"]
+    subgraph WAN ["WAN Core Provider (AS 65000)"]
         wan["wan-r1<br/>AS 65000"]
     end
 
-    subgraph DC1 ["🏢 Data Center Alpha (AS 65100)"]
-        dc1_edge["dc1-edge<br/>AS 65100 / OSPF Area 0"]
+    subgraph DC1 ["Data Center 1 - Alpha (AS 65100)"]
+        dc1_edge["dc1-edge<br/>BGP AS 65100 / OSPF Area 0"]
         dc1_dist["dc1-dist<br/>OSPF Area 0"]
         dc1_srv["dc1-srv<br/>10.1.10.100/24"]
-        
+
         dc1_srv ---|"10.1.10.0/24"| dc1_dist
-        dc1_dist ---|"10.1.0.0/30"| dc1_edge
+        dc1_dist ---|"10.1.0.0/30 (p2p)"| dc1_edge
     end
 
-    subgraph DC2 ["🏢 Data Center Bravo (AS 65200)"]
-        dc2_edge["dc2-edge<br/>AS 65200 / OSPF Area 0"]
+    subgraph DC2 ["Data Center 2 - Bravo (AS 65200)"]
+        dc2_edge["dc2-edge<br/>BGP AS 65200 / OSPF Area 0"]
         dc2_dist["dc2-dist<br/>OSPF Area 0"]
         dc2_srv["dc2-srv<br/>10.2.10.100/24"]
-        
+
         dc2_srv ---|"10.2.10.0/24"| dc2_dist
-        dc2_dist ---|"10.2.0.0/30"| dc2_edge
+        dc2_dist ---|"10.2.0.0/30 (p2p)"| dc2_edge
     end
 
     dc1_edge ===|"eBGP (10.100.1.0/30)"| wan
     wan ===|"eBGP (10.100.2.0/30)"| dc2_edge
-
-    classDef router fill:#2d3748,stroke:#cbd5e0,stroke-width:2px,color:#fff;
-    classDef host fill:#2b6cb0,stroke:#bee3f8,stroke-width:2px,color:#fff;
-    class wan,dc1_edge,dc1_dist,dc2_edge,dc2_dist router;
-    class dc1_srv,dc2_srv host;
 ```
 
 ---
 
-## 📊 Plan de Direccionamiento IP y Enrutamiento
+## IP Addressing and Routing Scheme
 
-| Dispositivo | Interfaz | Dirección IP | Función / Protocolo |
+| Device | Interface | IP Address | Protocol / Role |
 | :--- | :--- | :--- | :--- |
-| **wan-r1** | `eth1` | `10.100.1.1/30` | eBGP Peering con DC1-Edge (AS 65000 <-> 65100) |
-| | `eth2` | `10.100.2.1/30` | eBGP Peering con DC2-Edge (AS 65000 <-> 65200) |
-| **dc1-edge** | `eth1` | `10.100.1.2/30` | eBGP Uplink a WAN-R1 |
-| | `eth2` | `10.1.0.1/30` | OSPF Area 0 con DC1-Dist (Origina ruta default) |
-| **dc1-dist** | `eth1` | `10.1.0.2/30` | OSPF Area 0 con DC1-Edge |
-| | `eth2` | `10.1.10.1/24` | Gateway LAN para Servidores DC1 |
-| **dc1-srv** | `eth1` | `10.1.10.100/24` | Servidor aplicación DC1 (GW: 10.1.10.1) |
-| **dc2-edge** | `eth1` | `10.100.2.2/30` | eBGP Uplink a WAN-R1 |
-| | `eth2` | `10.2.0.1/30` | OSPF Area 0 con DC2-Dist (Origina ruta default) |
-| **dc2-dist** | `eth1` | `10.2.0.2/30` | OSPF Area 0 con DC2-Edge |
-| | `eth2` | `10.2.10.1/24` | Gateway LAN para Servidores DC2 |
-| **dc2-srv** | `eth1` | `10.2.10.100/24` | Servidor aplicación DC2 (GW: 10.2.10.1) |
+| **wan-r1** | `eth1` | `10.100.1.1/30` | eBGP peering to DC1-Edge (AS 65000 <-> 65100) |
+| | `eth2` | `10.100.2.1/30` | eBGP peering to DC2-Edge (AS 65000 <-> 65200) |
+| **dc1-edge** | `eth1` | `10.100.1.2/30` | eBGP uplink to WAN-R1 |
+| | `eth2` | `10.1.0.1/30` | OSPF Area 0 point-to-point peering to DC1-Dist |
+| **dc1-dist** | `eth1` | `10.1.0.2/30` | OSPF Area 0 point-to-point peering to DC1-Edge |
+| | `eth2` | `10.1.10.1/24` | Default gateway for DC1 servers |
+| **dc1-srv** | `eth1` | `10.1.10.100/24` | Application server (Default Gateway: 10.1.10.1) |
+| **dc2-edge** | `eth1` | `10.100.2.2/30` | eBGP uplink to WAN-R1 |
+| | `eth2` | `10.2.0.1/30` | OSPF Area 0 point-to-point peering to DC2-Dist |
+| **dc2-dist** | `eth1` | `10.2.0.2/30` | OSPF Area 0 point-to-point peering to DC2-Edge |
+| | `eth2` | `10.2.10.1/24` | Default gateway for DC2 servers |
+| **dc2-srv** | `eth1` | `10.2.10.100/24` | Application server (Default Gateway: 10.2.10.1) |
 
 ---
 
-## ⚙️ Principios de Arquitectura Implementados
+## Design Highlights
 
-1. **Segmentación de AS (Sistemas Autónomos):** Cada Datacenter actúa como un AS privado independiente (`65100` y `65200`), mientras que el núcleo WAN actúa como proveedor de tránsito (`65000`).
-2. **IGP Interno (OSPF):** Cada Datacenter ejecuta internamente OSPF en Área 0 para máxima velocidad de convergencia y aislamiento de fallos internos.
-3. **Redistribución de Rutas:** Los routers de borde (`dc1-edge` y `dc2-edge`) anuncian sus prefijos internos OSPF hacia la WAN mediante BGP, e inyectan una ruta predeterminada hacia el interior del Datacenter.
-4. **Validación Automatizada:** El script `tests/verify-enterprise-wan.sh` comprueba de forma automática BGP, OSPF, tablas de enrutamiento, ping de datos y trazabilidad de 6 saltos.
+1. **Autonomous System Design:** Each Data Center is provisioned under an independent 2-byte private Autonomous System (`65100` and `65200`). The WAN Core operates under transit AS `65000`.
+2. **Fast IGP Convergence:** OSPF is configured as `network point-to-point` on all `/30` links, eliminating DR/BDR election overhead and achieving sub-second adjacency establishment.
+3. **Route Redistribution:** Edge routers redistribute internal OSPF prefixes into BGP (`redistribute ospf`) and remote BGP prefixes into internal OSPF (`redistribute bgp`). This guarantees specific `/24` route propagation and prevents traffic misdirection.
+4. **Automated Verification:** The lab includes an automated validation script (`tests/verify-enterprise-wan.sh`) checking protocol status, routing tables, and end-to-end data plane forwarding.
