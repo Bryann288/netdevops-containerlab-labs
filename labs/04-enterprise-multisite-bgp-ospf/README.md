@@ -6,7 +6,7 @@ This laboratory emulates a multi-site enterprise network consisting of two data 
 
 ## Topology Diagram
 
-![Topology Diagram](../../docs/topology.svg)
+![Topology Diagram](../../docs/topology.png)
 
 ```mermaid
 flowchart TD

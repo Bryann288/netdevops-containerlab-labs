@@ -8,7 +8,7 @@ Repository containing declarative network topologies, configurations, and automa
 
 Below is the architecture for the Enterprise Multi-Site WAN topology (`labs/04-enterprise-multisite-bgp-ospf`):
 
-![Enterprise Multi-Site WAN Topology](docs/topology.svg)
+![Enterprise Multi-Site WAN Topology](docs/topology.png)
 
 ```mermaid
 flowchart TD
