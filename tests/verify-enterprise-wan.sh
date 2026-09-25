@@ -26,6 +26,17 @@ for node in clab-enterprise-wan-wan-r1 clab-enterprise-wan-dc1-edge clab-enterpr
     fi
 done
 
+# Wait for protocol convergence if running right after deploy
+echo -e "\n${YELLOW}[INFO] Waiting for BGP and OSPF protocol convergence...${NC}"
+for i in {1..15}; do
+    if docker exec clab-enterprise-wan-dc1-edge vtysh -c "show ip ospf neighbor" 2>/dev/null | grep -q "Full" && \
+       docker exec clab-enterprise-wan-dc2-edge vtysh -c "show ip ospf neighbor" 2>/dev/null | grep -q "Full" && \
+       docker exec clab-enterprise-wan-wan-r1 vtysh -c "show ip bgp summary" 2>/dev/null | grep -q "10.100.1.2"; then
+        break
+    fi
+    sleep 1
+done
+
 # 2. BGP session validation
 echo -e "\n${YELLOW}[2/5] Verifying BGP convergence on WAN Core (wan-r1)...${NC}"
 BGP_SUMMARY=$(docker exec clab-enterprise-wan-wan-r1 vtysh -c "show ip bgp summary" 2>/dev/null)
@@ -51,7 +62,8 @@ echo "$OSPF_DC2"
 if echo "$OSPF_DC1" | grep -q "Full" && echo "$OSPF_DC2" | grep -q "Full"; then
     echo -e "  [OK] OSPF neighbor state in DC1 and DC2: ${GREEN}FULL${NC}"
 else
-    echo -e "  [WARN] OSPF state still converging."
+    echo -e "  [FAIL] OSPF neighbors did not reach Full state."
+    exit 1
 fi
 
 # 4. Data plane ping test (DC1-Srv -> DC2-Srv)

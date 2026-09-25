@@ -9,6 +9,8 @@ topology:
       binds:
         - config/wan-r1/daemons:/etc/frr/daemons
         - config/wan-r1/frr.conf:/etc/frr/frr.conf
+      exec:
+        - vtysh -f /etc/frr/frr.conf
 
     # --- Site 1: Data Center Alpha (AS 65100) ---
     dc1-edge:
@@ -17,6 +19,8 @@ topology:
       binds:
         - config/dc1-edge/daemons:/etc/frr/daemons
         - config/dc1-edge/frr.conf:/etc/frr/frr.conf
+      exec:
+        - vtysh -f /etc/frr/frr.conf
 
     dc1-dist:
       kind: linux
@@ -24,6 +28,8 @@ topology:
       binds:
         - config/dc1-dist/daemons:/etc/frr/daemons
         - config/dc1-dist/frr.conf:/etc/frr/frr.conf
+      exec:
+        - vtysh -f /etc/frr/frr.conf
 
     dc1-srv:
       kind: linux
@@ -39,6 +45,8 @@ topology:
       binds:
         - config/dc2-edge/daemons:/etc/frr/daemons
         - config/dc2-edge/frr.conf:/etc/frr/frr.conf
+      exec:
+        - vtysh -f /etc/frr/frr.conf
 
     dc2-dist:
       kind: linux
@@ -46,6 +54,8 @@ topology:
       binds:
         - config/dc2-dist/daemons:/etc/frr/daemons
         - config/dc2-dist/frr.conf:/etc/frr/frr.conf
+      exec:
+        - vtysh -f /etc/frr/frr.conf
 
     dc2-srv:
       kind: linux
