@@ -13,13 +13,18 @@ Este repositorio contiene el entorno y las plantillas para ejecutar laboratorios
 ├── images/                       # Instrucciones y almacenamiento local de imágenes de red
 │   └── README.md
 └── labs/
-    ├── 01-frr-ospf/              # Lab listo para usar con FRRouting (OSPF) y clientes Alpine
+    ├── 01-frr-ospf/              # Lab básico inicial con FRRouting (OSPF) y clientes Alpine
     │   ├── config/               # Configuraciones iniciales (daemons, frr.conf)
     │   └── frr-ospf.clab.yml
     ├── 02-srlinux-leafspine/     # Topología Leaf-Spine con Nokia SR Linux
     │   └── srlinux-clos.clab.yml
-    └── 03-arista-ceos/           # Topología de conmutación con Arista cEOS
-        └── ceos-lab.clab.yml
+    ├── 03-arista-ceos/           # Topología de conmutación con Arista cEOS
+    │   └── ceos-lab.clab.yml
+    └── 04-enterprise-multisite-bgp-ospf/ # 🌟 PROYECTO PRINCIPAL: WAN Multi-Sitio con BGP + OSPF (7 nodos)
+        ├── config/               # Configuraciones FRR por nodo
+        ├── multisite-enterprise.clab.yml
+        └── README.md
+
 ```
 
 ---

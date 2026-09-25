@@ -1,0 +1,68 @@
+name: enterprise-wan
+
+topology:
+  nodes:
+    # --- WAN Core ---
+    wan-r1:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - config/wan-r1/daemons:/etc/frr/daemons
+        - config/wan-r1/frr.conf:/etc/frr/frr.conf
+
+    # --- Site 1: Data Center Alpha (AS 65100) ---
+    dc1-edge:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - config/dc1-edge/daemons:/etc/frr/daemons
+        - config/dc1-edge/frr.conf:/etc/frr/frr.conf
+
+    dc1-dist:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - config/dc1-dist/daemons:/etc/frr/daemons
+        - config/dc1-dist/frr.conf:/etc/frr/frr.conf
+
+    dc1-srv:
+      kind: linux
+      image: alpine:latest
+      exec:
+        - ip addr add 10.1.10.100/24 dev eth1
+        - ip route replace default via 10.1.10.1
+
+    # --- Site 2: Data Center Bravo (AS 65200) ---
+    dc2-edge:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - config/dc2-edge/daemons:/etc/frr/daemons
+        - config/dc2-edge/frr.conf:/etc/frr/frr.conf
+
+    dc2-dist:
+      kind: linux
+      image: frrouting/frr:latest
+      binds:
+        - config/dc2-dist/daemons:/etc/frr/daemons
+        - config/dc2-dist/frr.conf:/etc/frr/frr.conf
+
+    dc2-srv:
+      kind: linux
+      image: alpine:latest
+      exec:
+        - ip addr add 10.2.10.100/24 dev eth1
+        - ip route replace default via 10.2.10.1
+
+  links:
+    # WAN Interconnections
+    - endpoints: ["wan-r1:eth1", "dc1-edge:eth1"]
+    - endpoints: ["wan-r1:eth2", "dc2-edge:eth1"]
+
+    # Site 1 Interconnections
+    - endpoints: ["dc1-edge:eth2", "dc1-dist:eth1"]
+    - endpoints: ["dc1-dist:eth2", "dc1-srv:eth1"]
+
+    # Site 2 Interconnections
+    - endpoints: ["dc2-edge:eth2", "dc2-dist:eth1"]
+    - endpoints: ["dc2-dist:eth2", "dc2-srv:eth1"]
